@@ -1,14 +1,15 @@
 import "dotenv/config"
+
+// Allow self-signed certificates (required for DO managed/dev databases)
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"
+
 import { PrismaClient } from "../generated/prisma/client.js"
 import { PrismaPg } from "@prisma/adapter-pg"
-import { Pool } from "pg"
 import { hashSync } from "bcryptjs"
 
-const pool = new Pool({
+const adapter = new PrismaPg({
   connectionString: process.env.DATABASE_URL!,
-  ssl: { rejectUnauthorized: false },
 })
-const adapter = new PrismaPg(pool)
 const prisma = new PrismaClient({ adapter })
 
 const departments = [
